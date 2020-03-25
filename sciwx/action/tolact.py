@@ -1,8 +1,24 @@
 from .action import SciAction
+from ..widgets import ParaDialog
 
 class Tool(SciAction):
     title = 'Base Tool'
     default = None
+
+    # Add show() method 
+    # 2020.3.23 Xinbo Qi
+    view, para = None, None
+    def show(self, app):
+        self.app = app
+        print("show paradialog")
+        if self.view == None:
+            return
+        dialog = ParaDialog(self.app.get_img_win(), self.title)
+        dialog.init_view(self.view, self.para, modal=True)
+        status = dialog.ShowModal()==5100
+        dialog.Destroy()
+        return status
+
     def mouse_down(self, image, x, y, btn, **key): pass
     def mouse_up(self, image, x, y, btn, **key): pass
     def mouse_move(self, image, x, y, btn, **key): pass

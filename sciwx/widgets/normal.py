@@ -159,7 +159,7 @@ class PathCtrl(wx.Panel):
     def ontext(self, event): print('ColorCtrl')
         
     def onselect(self, event):
-        from ...core.manager import ConfigManager
+        from ..manager import ConfigManager
         filt = '|'.join(['%s files (*.%s)|*.%s'%(i.upper(),i,i) for i in self.filt])
         dpath = ConfigManager.get('defaultpath') or '.'
         #if dpath==None: dpath = root_dir # './'

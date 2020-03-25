@@ -46,6 +46,10 @@ class ToolBar(wx.Panel):
     def bind(self, btn, tol):
         btn.SetBackgroundColour(self.GetBackgroundColour())
         btn.Bind( wx.EVT_LEFT_DOWN, lambda e, obj=tol: self.on_tool(e, obj))
+
+        # Add double-click binding
+        # 2020-3-23 Xinbo Qi
+        btn.Bind(wx.EVT_LEFT_DCLICK, lambda e, obj=tol: tol().show(self.app))
             
     def add_tool(self, logo, tool):
         btn = wx.BitmapButton(self, wx.ID_ANY, make_logo(self, logo), 

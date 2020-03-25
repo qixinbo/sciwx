@@ -3,21 +3,23 @@ sys.path.append('../../')
 from sciwx.widgets import ParaDialog
 
 if __name__ == '__main__':
-    para = {'name':'yxdragon', 'age':10, 'h':1.72, 'w':70, 'sport':True, 'sys':'Mac', 'lan':['C/C++', 'Python'], 'c':(255,0,0)} 
+    para = {'name':'yxdragon', 'age':10, 'h':1.72, 'w':70, 'sport':True, 'sys':'Mac', 'lan':['C/C++', 'Python'], 'c':(255, 255, 0), 'path': '', 'type': None} 
 
     view = [('lab', 'lab', 'This is a questionnaire'),
             (str, 'name', 'name', 'please'), 
-            (int, 'age', (0,150), 0, 'age', 'years old'),
+            (int, 'age', (0,150), 1, 'age', 'years old'),
             (float, 'h', (0.3, 2.5), 2, 'height', 'm'),
             ('slide', 'w', (1, 150), 0, 'weight','kg'),
             (bool, 'sport', 'do you like sport'),
             (list, 'sys', ['Windows','Mac','Linux'], str, 'favourite', 'system'),
             ('chos', 'lan', ['C/C++','Java','Python'], 'lanuage you like(multi)'),
-            ('color', 'c', 'which', 'you like')]
+            ('color', 'c', 'which', 'you like'),
+            ('path', 'path', 'Select the image', ['jpg', 'jpeg', 'png'])
+            ]
 
     app = wx.App()
     pd = ParaDialog(None, 'Test')
-    pd.init_view(view, para, preview=True, modal=False)
+    pd.init_view(view, para, preview=True, modal=True)
     pd.pack()
     pd.ShowModal()
     print(para)
