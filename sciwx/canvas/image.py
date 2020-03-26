@@ -54,6 +54,8 @@ class Image:
         self.cur = 0
         self.dirty = False
         self.snap = None
+        self.mark = None
+        self.back = None
 
     @property
     def title(self): return self.name

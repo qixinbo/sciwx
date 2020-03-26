@@ -17,7 +17,11 @@ class Tool(SciAction):
         dialog.init_view(self.view, self.para, modal=True)
         status = dialog.ShowModal()==5100
         dialog.Destroy()
+        if status != None:
+            self.config()
         return status
+
+    def config(self): pass
 
     def mouse_down(self, image, x, y, btn, **key): pass
     def mouse_up(self, image, x, y, btn, **key): pass

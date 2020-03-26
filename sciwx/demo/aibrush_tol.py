@@ -5,6 +5,7 @@ from sciwx.action import Tool, DefaultTool, ImgAction
 from sciwx.canvas import CanvasFrame
 from sciwx.app.manager import App
 from sciwx.widgets import MenuBar
+from sciwx.plugins.io import Open, Save
 
 import numpy as np
 from time import time
@@ -15,8 +16,6 @@ from skimage.segmentation import felzenszwalb
 from skimage.io import imread
 from sciwx.mark import GeometryMark
 from scipy.ndimage import binary_fill_holes, binary_dilation, binary_erosion
-
-image = None
 
 def fill_normal(img, r, c, color, con, tor):
     img = img.reshape((img.shape+(1,))[:3])
@@ -340,6 +339,16 @@ class TestFrame(CanvasFrame, App):
         menubar = MenuBar(self)
         self.SetMenuBar(menubar)
         return menubar
+        
+    def getpath(self, title, filt, io, name=''):
+        filt = '|'.join(['%s files (*.%s)|*.%s'%(i.upper(),i,i) for i in filt])
+        dic = {'open':wx.FD_OPEN, 'save':wx.FD_SAVE}
+        dialog = wx.FileDialog(self, title, '', name, filt, dic[io])
+        rst = dialog.ShowModal()
+        path = dialog.GetPath() if rst == wx.ID_OK else None
+        dialog.Destroy()
+        return path
+
 
 if __name__=='__main__':
     from skimage.data import camera, astronaut
@@ -347,16 +356,19 @@ if __name__=='__main__':
 
     app = wx.App()
 
-    cf = TestFrame(None)
-    cf.set_img(astronaut())
-    cf.set_cn((0,1,2))
+    ai_pen = TestFrame(None)
+    ai_pen.set_img(astronaut())
+    ai_pen.set_cn((0,1,2))
 
-    bar = cf.add_menubar()
+    bar = ai_pen.add_menubar()
     bar.load(('menu',[
-        ('Edit',[('Unto', Undo)])
+        ('File', [
+            ('Open', Open),
+            ('Save', Save)]),
+        ('Edit', [('Undo', Undo)])
         ]))
-    bar = cf.add_toolbar()
+    bar = ai_pen.add_toolbar()
     bar.add_tool('C', ColorPicker)
     bar.add_tool('A', AIPen)
-    cf.Show()
+    ai_pen.Show()
     app.MainLoop()

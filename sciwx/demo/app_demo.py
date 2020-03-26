@@ -32,7 +32,7 @@ if __name__ == '__main__':
                                                   ('Channels', Channels)]),
                                    ('Navigator', [('Viewport', ViewPort)])]))
     
-    frame.show_img(camera())
-    frame.show_img(camera())
+    # frame.show_img(camera())
+    # frame.show_img(camera())
     frame.Show()
     app.MainLoop()

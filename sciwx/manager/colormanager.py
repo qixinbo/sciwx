@@ -4,7 +4,7 @@ Created on Sat Jan 14 23:24:32 2017
 @author: yxl
 """
 #from __future__ import absolute_import
-from ... import root_dir
+root_dir = 'D:\\temp\\sciwx\\sciwx'
 
 import numpy as np
 import os, wx

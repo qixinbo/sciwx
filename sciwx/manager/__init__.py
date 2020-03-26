@@ -1,4 +1,4 @@
-# from .colormanager import *
+from .colormanager import *
 # from .pluginmanager import *
 # from .windowmanager import *
 # from .roimanager import *
