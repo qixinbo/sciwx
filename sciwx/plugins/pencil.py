@@ -1,9 +1,21 @@
 from sciwx.action import Tool
-from skimage.draw import line
+from sciwx.manager import ColorManager
+from skimage.draw import line, circle
+
+def drawline(img, oldp, newp, w, value):
+    if img.ndim == 2: value = sum(value)/3
+    oy, ox = line(*[int(round(i)) for i in oldp+newp])
+    cy, cx = circle(0, 0, w/2+1e-6)
+    ys = (oy.reshape((-1,1))+cy).clip(0, img.shape[0]-1)
+    xs = (ox.reshape((-1,1))+cx).clip(0, img.shape[1]-1)
+    img[ys.ravel(), xs.ravel()] = value
 
 class Pencil(Tool):
     title = 'Pencil'
-
+    
+    para = {'width':1}
+    view = [(int, 'width', (0,30), 0,  'width', 'pix')]
+    
     def __init__(self):
         self.status = False
         self.oldp = (0,0)
@@ -18,12 +30,10 @@ class Pencil(Tool):
     
     def mouse_move(self, ips, x, y, btn, **key):
         if not self.status:return
-        se = self.oldp + (y,x)
-        rs,cs = line(*[int(i) for i in se])
-        rs.clip(0, ips.shape[1], out=rs)
-        cs.clip(0, ips.shape[0], out=cs)
-        ips.img[rs,cs] = 255
+        w = self.para['width']
+        value = ColorManager.get_front()
+        drawline(ips.img, self.oldp, (y, x), w, value)
         self.oldp = (y, x)
-        key['canvas'].update()
+        ips.update()
         
     def mouse_wheel(self, ips, x, y, d, **key):pass
