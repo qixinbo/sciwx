@@ -208,6 +208,7 @@ class AIBrush(Tool):
             ColorManager.set_front(ips.img[y, x])
         self.status = None
         ips.mark = None
+        key['canvas'].marks = [None]
         ips.update()
     
     def make_mark(self, x, y):
@@ -219,7 +220,8 @@ class AIBrush(Tool):
 
         mark['body'].append({'type':'text', 'body':(x-wins, y-wins, 
             'S:%s W:%s'%(self.para['ms'], self.para['win'])), 'pt':False, 'color':self.para['color']})
-        return GeometryMark(mark)
+        # return GeometryMark(mark)
+        return mark
 
     def mouse_move(self, ips, x, y, btn, **key):
         if self.status == None and ips.mark != None:
@@ -269,6 +271,7 @@ class AIBrush(Tool):
 
 
         ips.mark = self.make_mark(x, y)
+        key['canvas'].marks = self.make_mark(x, y)['body']
         self.oldp = (y, x)
         ips.update()
         

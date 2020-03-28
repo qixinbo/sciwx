@@ -286,11 +286,10 @@ def draw_text(pts, dc, f, **key):
 	dc.SetTextForeground(tcolor)
 	dc.SetTextBackground(bcolor)
 
-draw_dic = {'points':plot, 'point':plot, 'line':plot, 'polygon':plot, 'lines':plot, 'polygons':plot,
-			'circle':draw_circle, 'circles':draw_circle, 'ellipse':draw_ellipse, 'ellipses':draw_ellipse,
-			'rectangle':draw_rectangle, 'rectangles':draw_rectangle, 'text':draw_text, 'texts':draw_text}
+draw_dic = {'points':plot, 'point':plot, 'line':plot, 'polygon':plot, 'lines':plot, 'polygons':plot, 'circle':draw_circle, 'circles':draw_circle, 'ellipse':draw_ellipse, 'ellipses':draw_ellipse, 'rectangle':draw_rectangle, 'rectangles':draw_rectangle, 'text':draw_text, 'texts':draw_text}
 
-def draw(obj, dc, f, **key): draw_dic[obj['type']](obj, dc, f, **key)
+def draw(obj, dc, f, **key):
+	draw_dic[obj['type']](obj, dc, f, **key)
 
 def draw_layer(pts, dc, f, **key):
 	pen, brush = dc.GetPen(), dc.GetBrush()
@@ -348,20 +347,23 @@ def draw_layers(pts, dc, f, **key):
 
 draw_dic['layers'] = draw_layers
 
+def drawmark(dc, f, body, **key):
+	pen, brush, font = dc.GetPen(), dc.GetBrush(), dc.GetFont()
+	pen.SetColour(ConfigManager.get('mark_color') or (255,255,0))
+	brush.SetColour(ConfigManager.get('mark_fcolor') or (255,255,255))
+	brush.SetStyle((106,100)[ConfigManager.get('mark_fill') or False])
+	pen.SetWidth(ConfigManager.get('mark_lw') or 1)
+	dc.SetTextForeground(ConfigManager.get('mark_tcolor') or (255,0,0))
+	font.SetPointSize(ConfigManager.get('mark_tsize') or 8)
+	dc.SetPen(pen); dc.SetBrush(brush); dc.SetFont(font);
+	draw(body, dc, f, **key)
+
 class GeometryMark:
 	def __init__(self, body):
 		self.body = body
 
 	def draw(self, dc, f, **key):
-		pen, brush, font = dc.GetPen(), dc.GetBrush(), dc.GetFont()
-		pen.SetColour(ConfigManager.get('mark_color') or (255,255,0))
-		brush.SetColour(ConfigManager.get('mark_fcolor') or (255,255,255))
-		brush.SetStyle((106,100)[ConfigManager.get('mark_fill') or False])
-		pen.SetWidth(ConfigManager.get('mark_lw') or 1)
-		dc.SetTextForeground(ConfigManager.get('mark_tcolor') or (255,0,0))
-		font.SetPointSize(ConfigManager.get('mark_tsize') or 8)
-		dc.SetPen(pen); dc.SetBrush(brush); dc.SetFont(font);
-		draw(self.body, dc, f, **key)
+		drawmark(dc, f, self.body, **key)
 
 if __name__ == '__main__':
 	print(make_ellipse(0,0,2,1,0))

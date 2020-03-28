@@ -1,7 +1,7 @@
 import wx, numpy as np
 from .boxutil import cross, multiply, lay, mat
 from .imutil import mix_img
-from .mark import drawmark
+from ..mark.mark import drawmark
 from .image import Image
 from ..action import Tool, DefaultTool
 from time import time
@@ -109,11 +109,15 @@ class Canvas (wx.Panel):
         dc.Clear()
         self.draw_image(dc, self.image.img, self.back.img, 0)
         for i in self.marks:
-            if self.marks[i] is None: continue
-            if callable(self.marks[i]):
-                self.marks[i](dc, self.to_panel_coor, k = self.scale)
+            if i is None: continue
+            if not isinstance(i, dict):
+                if self.marks[i] is None: continue
+                if callable(self.marks[i]):
+                    self.marks[i](dc, self.to_panel_coor, k = self.scale)
+                else:
+                    drawmark(dc, self.to_panel_coor, self.marks[i], k=self.scale)
             else:
-                drawmark(dc, self.to_panel_coor, self.marks[i], k=self.scale)
+                drawmark(dc, self.to_panel_coor, i, k=self.scale)
         dc.UnMask()
         counter[1] += time()-start
         if counter[0] == 10:

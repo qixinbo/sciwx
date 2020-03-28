@@ -14,7 +14,7 @@ from skimage.morphology import flood_fill, flood
 from skimage.draw import line, circle
 from skimage.segmentation import felzenszwalb
 from skimage.io import imread
-from sciwx.mark import GeometryMark
+from sciwx.mark.mark import GeometryMark
 from scipy.ndimage import binary_fill_holes, binary_dilation, binary_erosion
 
 def fill_normal(img, r, c, color, con, tor):
@@ -222,7 +222,9 @@ class AIPen(Tool):
 
         mark['body'].append({'type':'text', 'body':(x-wins, y-wins, 
             'S:%s W:%s'%(self.para['ms'], self.para['win'])), 'pt':False, 'color':self.para['color']})
-        return GeometryMark(mark)
+        print('mark = ', mark)
+        return mark
+        # return GeometryMark(mark)
 
     def mouse_move(self, ips, x, y, btn, **key):
         if self.status == None and ips.mark != None:
@@ -271,7 +273,10 @@ class AIPen(Tool):
                 local_out_fill(imgclip, r, c, self.para['r'], self.pickcolor, color)
 
 
-        ips.mark = self.make_mark(x, y)
+        # ips.mark = self.make_mark(x, y)
+
+        key['canvas'].marks = self.make_mark(x, y)['body']
+
         self.oldp = (y, x)
         ips.update()
         

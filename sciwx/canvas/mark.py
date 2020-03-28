@@ -371,8 +371,8 @@ class GeometryMark:
 		self.body = body
 
 	def draw(self, dc, f, **key):
-		drawmark(dc, f, self.body, key)
+		drawmark(dc, f, self.body, **key)
 
 if __name__ == '__main__':
-	pass
-	# print(make_ellipse(0,0,2,1,0))
+	# pass
+	print(make_ellipse(0,0,2,1,0))
