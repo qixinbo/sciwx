@@ -12,10 +12,10 @@ from sciwx.app.manager import App
 from sciwx.action import Tool, DefaultTool
 
 from sciwx.plugins.filters import Gaussian, Undo
-from sciwx.plugins.pencil import Pencil
+# from sciwx.plugins.pencil import Pencil
 # from sciwx.plugins.setscale import SetScale
-from sciwx.plugins.aibrush import AIBrush
-from sciwx.plugins.io import Open, Save
+# from sciwx.plugins.aibrush import AIBrush
+from sciwx.plugins.customio import Open, Save
 
 from sciwx.widgets import ParaDialog
 from sciwx.manager import ConfigManager
@@ -30,19 +30,19 @@ from skimage.io import imsave
 
 
 def ExtractUpperBoundary(img):
-    print('img dim = ', img.ndim)
+    # print('img dim = ', img.ndim)
 
-    # uint8 conversion
-    if img.ndim > 2:
-        img = img.mean(axis=2).astype(np.uint8)
-    else:
-        img = img.astype(np.uint8)
+    # # uint8 conversion
+    # if img.ndim > 2:
+    #     img = img.mean(axis=2).astype(np.uint8)
+    # else:
+    #     img = img.astype(np.uint8)
 
-    # crop to remove the noisy boundaries
-    print('img shape before crop = ', img.shape)
-    margin = 3
-    img = img[margin:img.shape[0]-margin, margin:img.shape[1]-margin]
-    print('img shape after crop = ', img.shape)
+    # # crop to remove the noisy boundaries
+    # print('img shape before crop = ', img.shape)
+    # margin = 3
+    # img = img[margin:img.shape[0]-margin, margin:img.shape[1]-margin]
+    # print('img shape after crop = ', img.shape)
 
     # make a copy for lower boundary classification
     snap = img.copy()
@@ -300,12 +300,9 @@ if __name__ == '__main__':
     frame = MeltPoolApp(None)
     frame.load_menu(('menu',[('File',[('Open', Open),
                                       ('Save', Save)]),
-                             ('Edit', [('Gaussian', Gaussian),
-                                          ('Undo', Undo)])]))
+                             ('Edit', [('Undo', Undo)])]))
     frame.load_tool(('tools',[('standard', [('D', DefaultTool),
-                                            ('S', ExtractMeltPool)]),
-                              ('draw', [('P', Pencil),
-                                        ('A', AIBrush)])]))
+                                            ('S', ExtractMeltPool)])]))
 
     frame.Show()
 
