@@ -46,6 +46,7 @@ def ExtractUpperBoundary(img):
 
     # make a copy for lower boundary classification
     snap = img.copy()
+    img_raw = img.copy()
 
     # otsu threshold
     img = (img > threshold_otsu(img))*255
@@ -114,9 +115,11 @@ def ExtractUpperBoundary(img):
     pt_down = np.argwhere(snap == 255)[-1]
     print('down vertex idx = ', pt_down)
 
-    return pt_left, pt_right, pt_up, pt_down, snap
+    return pt_left, pt_right, pt_up, pt_down, img_raw
 
 def make_mark(p0, p1, p2, p3, img):
+    scale = ConfigManager.get('scalebar')
+
     p_middle_x = (p0[0] + p1[0])/2
     line_middle_horizon = [(0, p_middle_x), (img.shape[1], p_middle_x)]
     line_up_horizon = [(0, p2[0]), (img.shape[1], p2[0])]
@@ -131,14 +134,29 @@ def make_mark(p0, p1, p2, p3, img):
             line_left_verizon,
             line_right_verizon]}
 
-    lenght_height_x = (p1[0]+p2[0])/2-10
-    lenght_height_y = p1[1]+10
-    height = p_middle_x-p2[0]
-    height_text = str(height)
+    bias = 10
 
-    texts = {'type':'texts', 'color':(255,255,0), 'fcolor':(0,0,0), 'size':20, 'pt':False, 
-    'body':[(lenght_height_y, lenght_height_x, height_text),
-            (180,250,'id=1')]}
+    height_x = (p1[0]+p2[0])/2-bias
+    height_y = p1[1]+bias
+    height = int((p_middle_x-p2[0])*scale)
+    height_text = str(height)+"um"
+
+    print('height in pixels = ', (p_middle_x-p2[0]))
+
+    depth_x = (p1[0]+p3[0])/2-bias
+    depth_y = p1[1]+bias
+    depth = int((p3[0]-p_middle_x)*scale)
+    depth_text = str(depth)+"um"
+
+    width_x = p2[0]
+    width_y = (p0[1]+p1[1])/2-bias
+    width = int((p1[1]-p0[1])*scale)
+    width_text = str(width)+"um"
+
+    texts = {'type':'texts', 'color':(255,0,0), 'fcolor':(0,0,0), 'size':20, 'pt':False, 
+    'body':[(height_y, height_x, height_text),
+            (depth_y, depth_x, depth_text),
+            (width_y, width_x, width_text)]}
 
     mark = {'type':'layer', 'body':[lines, texts]}
     return mark
@@ -166,7 +184,7 @@ class ExtractMeltPool(Tool):
             pd.init_view(view, para, preview=False, modal=True)
             pd.ShowModal()
             ConfigManager.set('scalebar', para['scalebar']/(self.pos[1][1]-self.pos[0][1]))
-            print(ConfigManager.get('scalebar'))
+            print("scale bar = ", ConfigManager.get('scalebar'))
             pt_left, pt_right, pt_up, pt_down, ips.img = ExtractUpperBoundary(ips.img)
             key['canvas'].marks = make_mark(pt_left, pt_right, pt_up, pt_down, ips.img)['body']
             ips.update()
